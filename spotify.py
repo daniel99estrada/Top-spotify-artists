@@ -82,10 +82,20 @@ class SpotifyAPI:
             headers = {}
         headers['Authorization'] = f'Bearer {self.access_token}'
 
-        response = requests.request(method, url, params=params, json=data, headers=headers)
+        if method.upper() == "GET":
+            response = requests.get(url, params=params, headers=headers)
+        elif method.upper() == "POST":
+            response = requests.post(url, json=data, headers=headers)
+        else:
+            response = requests.request(method, url, params=params, json=data, headers=headers)
 
         if response.status_code == 200:
             return response.json()
         print(f"Request to {url} failed with status code {response.status_code}")
         print("Response content:", response.json())
         return None
+        
+    def get_top_artists(self, time_range='long_term', limit=50):
+        url = f'https://api.spotify.com/v1/me/top/artists?time_range={time_range}&limit={limit}'
+        response = self.request("GET", url)
+        return response

@@ -44,18 +44,17 @@ def get_token():
 
 @app.route('/get_top_artists')
 def get_top_artists():
-    global access_token
-    if not access_token:
-        return jsonify({'error': 'No access token available'}), 400
 
-    headers = {
-        'Authorization': f'Bearer {access_token}'
+    top_artists_long = spotify.get_top_artists(time_range='long_term', limit=10)['items']
+    top_artists_medium = spotify.get_top_artists(time_range='medium_term', limit=10)['items']
+    top_artists_short = spotify.get_top_artists(time_range='short_term', limit=10)['items']
+
+    top_artists = {
+        'long_term': [{'id': artist['id'], 'name': artist['name']} for artist in top_artists_long],
+        'medium_term': [{'id': artist['id'], 'name': artist['name']} for artist in top_artists_medium],
+        'short_term': [{'id': artist['id'], 'name': artist['name']} for artist in top_artists_short]
     }
-    response = requests.get('https://api.spotify.com/v1/me/top/artists?time_range=long_term&limit=50', headers=headers)
 
-    if response.status_code == 200:
-        return jsonify(response.json())
-    return jsonify({'error': 'Failed to retrieve top artists'}), response.status_code
-
+    return jsonify(top_artists)
 if __name__ == '__main__':
     app.run(port=8888, debug=True)
