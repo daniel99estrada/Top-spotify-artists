@@ -54,7 +54,8 @@ def get_top_artists():
         'medium_term': [{'id': artist['id'], 'name': artist['name']} for artist in top_artists_medium],
         'short_term': [{'id': artist['id'], 'name': artist['name']} for artist in top_artists_short]
     }
-
+    # playlist = spotify.create_playlist("test1", "Test playlistt functionalities")
+    # print(f"ID: {playlist['id']}, Owner: {playlist['name']}")
     return jsonify(top_artists)
 if __name__ == '__main__':
     app.run(port=8888, debug=True)
